@@ -57,10 +57,12 @@ docs/_build/
 
 # PyBuilder
 target/
-
+pip-selfcheck.json
+pyvenv.cfg
 #Ipython Notebook
 .ipynb_checkpoints
 
 *.komodoproject
 pyvenv.cfg
 Scripts/
+bin/
