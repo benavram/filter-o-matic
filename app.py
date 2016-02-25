@@ -79,10 +79,8 @@ def serialize_lists():
 @app.route('/evaluate/')
 def apply_filter():
     if 'eval_string' not in request.args:
-        # return 'invalid request'
-        # raise ValueError('eval string not in request')
-        raise InvalidUsage('eval string not in request', status_code=400)
-    
+        return 'invalid request'
+
     elif request.args['eval_string'] == '':
         return 'invalid request'
     else:
@@ -97,14 +95,18 @@ def apply_filter():
 
 @app.route('/')
 def hello_world():
-    return "home"
+    # return "home"
+    raise InvalidUsage('This view is gone', status_code=410)
 
-@app.errorhandler(InvalidUsage)
+@app.errorhandler(404)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
 
+if __name__ == '__main__':
+    app.run(debug=True)
+    
 class InvalidUsage(Exception):
     status_code = 400
 
@@ -119,6 +121,3 @@ class InvalidUsage(Exception):
         rv = dict(self.payload or ())
         rv['message'] = self.message
         return rv
-
-if __name__ == '__main__':
-    app.run(debug=True)
