@@ -64,11 +64,8 @@ class Filter_o_matic(object):
             return next(replacements)            
 
     def cleanit(self):
-        # cleaned = [w.replace(str(item[0]), str(item[1])) for w in clean_list]
-        replacement_string = "++==++==++"
         cleansed = self.re_profanity.sub(self.get_replacements,
                                          self.eval_string)
-
         return cleansed
 
 

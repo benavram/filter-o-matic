@@ -3,6 +3,15 @@
 """
 import redis
 
+app_name = 'filter-o-matic',
+licensed = """
+        licensed in accordance with terms of the GNU General Public
+        License
+        """
+lic_loc = 'https://github.com/benavram/filter-o-matic/blob/master/LICENSE'
+docs = 'https://github.com/benavram/filter-o-matic'
+copy_r = '2016 office(ish).com'
+
 REDIS_CONN = redis.Redis(host="localhost", port=20888, db=1)
 
 S = 0
