@@ -1,0 +1,9 @@
+.fom:before{
+   font-family: FontAwesome;
+   color:red;
+}
+#item:before{
+    font-family: FontAwesome;
+    color:red;
+    content: attr(data-content);
+}

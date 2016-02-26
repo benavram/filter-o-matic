@@ -26,7 +26,7 @@ API docs at https://github.com/benavram/filter-o-matic
 # Authors:
 
 """
-from flask import Flask, jsonify, request, json, abort
+from flask import Flask, jsonify, request, json, render_template
 
 import filteromatic.main
 from filteromatic.settings import app_name, licensed, docs, copy_r, lic_loc
@@ -98,7 +98,7 @@ def serialize_lists():
                  'content':content_list
                     }
 
-    return_feed = json.dumps(word_feed)
+    return_feed = jsonify(word_feed)
         
     return return_feed
 
@@ -111,9 +111,9 @@ def apply_filter():
     """    
     r = None
     if 'eval_string' not in request.args:
-        return json.dumps({'exception':'invalid request'})
+        return jsonify({'exception':'invalid request'})
     elif request.args['eval_string'] == '':
-        return json.dumps({'exception':'invalid request'})
+        return jsonify({'exception':'invalid request'})
     else:
         eval_string  = request.args['eval_string']
     
@@ -122,11 +122,10 @@ def apply_filter():
     
     if 'replacement_type' in request.args:
         r = request.args['replacement_type']
-        print(r)
         
     cleaned_string = Filter_o_matic(eval_string).cleanit(r)
     return_string = {'clean_string':cleaned_string}
-    return json.dumps(return_string)
+    return jsonify(return_string)
 
 
 @app.route('/check_word/')
@@ -135,20 +134,23 @@ def check_word():
     object if exists word: string
     """
     if 's_word' not in request.args:
-        return json.dumps({'exception':'invalid request'})
+        return jsonify({'exception':'invalid request'})
     else:
         s = request.args['s_word']
         if word_check(s):
-            return json.dumps({'profanity':'true'})
+            return jsonify({'profanity':'true'})
         else:
-            return json.dumps({'profanity':'false'})
+            return jsonify({'profanity':'false'})
 
 
 @app.route('/')
 def hello_world():
-    return "filter-o-matic"
+    return render_template('test.html', items="filter-o-matic")
+    # return "\25AE"
+    # return jsonify({'exception':'invalid request'})
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='192.168.1.3', debug=True)
+    # app.run(debug=True)    
     
