@@ -1,11 +1,37 @@
 #!flask/bin/python
-from flask import Flask, jsonify, request, json
+"""filter-o-matic flas app
+    Copyright (c) 2016 office(ish).com
+
+    https://github.com/benavram/filter-o-matic
+
+    This file is part of filter-o-matic.
+
+    filter-o-matic is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with [app name].  If not, see <http://www.gnu.org/licenses/> or
+    <https://github.com/benavram/filter-o-matic/blob/master/LICENSE>
+
+  # Configuration variables
+
+API docs at https://github.com/benavram/filter-o-matic
+# Authors:
+
+"""
+from flask import Flask, jsonify, request, json, abort
 
 import filteromatic.main
 from filteromatic.settings import app_name, licensed, docs, copy_r, lic_loc
 from filteromatic.main import Filter_o_matic
-from werkzeug.contrib.atom import AtomFeed
-from filteromatic.utils import word_lists
+from filteromatic.utils import word_lists, word_check
 from datetime import datetime
 app = Flask(__name__)
 
@@ -78,46 +104,51 @@ def serialize_lists():
 
 @app.route('/evaluate/')
 def apply_filter():
+    """evaluate and return edited sring
+       request objects:
+           eval_string: string to be evaluated, mandatory
+           replacement_type:  type of replacement to insert (default = None)
+    """    
+    r = None
     if 'eval_string' not in request.args:
-        return 'invalid request'
-
+        return json.dumps({'exception':'invalid request'})
     elif request.args['eval_string'] == '':
-        return 'invalid request'
+        return json.dumps({'exception':'invalid request'})
     else:
         eval_string  = request.args['eval_string']
     
     if len(eval_string) > 1024:
-        return 'invalid request: string too long'
+        return json.dumps({'exception':'invalid request: string too long'})
     
-    cleaned_string = Filter_o_matic(eval_string).cleanit()
-    
-    return cleaned_string
+    if 'replacement_type' in request.args:
+        r = request.args['replacement_type']
+        print(r)
+        
+    cleaned_string = Filter_o_matic(eval_string).cleanit(r)
+    return_string = {'clean_string':cleaned_string}
+    return json.dumps(return_string)
+
+
+@app.route('/check_word/')
+def check_word():
+    """check word against profanity list and return true in json
+    object if exists word: string
+    """
+    if 's_word' not in request.args:
+        return json.dumps({'exception':'invalid request'})
+    else:
+        s = request.args['s_word']
+        if word_check(s):
+            return json.dumps({'profanity':'true'})
+        else:
+            return json.dumps({'profanity':'false'})
+
 
 @app.route('/')
 def hello_world():
-    # return "home"
-    raise InvalidUsage('This view is gone', status_code=410)
+    return "filter-o-matic"
 
-@app.errorhandler(404)
-def handle_invalid_usage(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
     
-class InvalidUsage(Exception):
-    status_code = 400
-
-    def __init__(self, message, status_code=None, payload=None):
-        Exception.__init__(self)
-        self.message = message
-        if status_code is not None:
-            self.status_code = status_code
-        self.payload = payload
-
-    def to_dict(self):
-        rv = dict(self.payload or ())
-        rv['message'] = self.message
-        return rv
