@@ -40,7 +40,7 @@ know what I'm sayin?"""
 replacements = iter(REPLACEMENTS)
 grawlix = ["$", "#", "@", "!", "*", "&", "%", "~", "}"]
 grawlix_e = { "\\$", "\\#", "@", "!", "*", "\\&", "\\%" }
-
+font_awesome_icons = '_fom_item'
 class Filter_o_matic(object):
     """  docstring
 
@@ -67,6 +67,13 @@ class Filter_o_matic(object):
                 g_l.append(g[0])
             glist = ''.join(g_l)
             return glist
+        
+        elif WORD_REPLACE == 'font_awesome':
+            fa_l = []
+            f = font_awesome_icons
+            fa_l.append(f)
+            falist = ''.join(fa_l)
+            return falist
         
         elif WORD_REPLACE == 'hashes':
             n = random.randint(4,10)

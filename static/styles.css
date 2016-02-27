@@ -6,4 +6,15 @@
     font-family: FontAwesome;
     color:red;
     content: attr(data-content);
+    /*content: '\f05b'*/
+}
+
+.fom_inline:before{
+    font-family: FontAwesome;
+    /*set replacement color*/
+    /*color:#333333;*/
+    color:#800000;
+    font-size: large;
+    content: attr(data-content);
+    /*content: '\f05b'*/
 }

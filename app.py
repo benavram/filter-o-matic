@@ -138,9 +138,10 @@ def check_word():
     else:
         s = request.args['s_word']
         if word_check(s):
-            return jsonify({'profanity':'true'})
+            return jsonify(result='true')
         else:
-            return jsonify({'profanity':'false'})
+            # return jsonify({'profanity':'false'})
+            return jsonify(result='false')
 
 
 @app.route('/')

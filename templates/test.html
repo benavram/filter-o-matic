@@ -5,13 +5,14 @@
         <link rel="stylesheet" href="static/styles.css" />
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type=text/javascript>
+            $SCRIPT_ROOT = {{ request.script_root|tojson }};
+        </script>
         <script src="/static/filteromatic.js"></script>
         <script>
         $(document).ready(function(){
-            
-           get_replacements();
-
-
+            $('#field1').filteromatic(fom_syms);
+            $('#field2').filteromatic(fom_rpsls);
             });
 
 </script>
@@ -20,11 +21,18 @@
         </style>
     </head>
     <body>
-        <p class="tester">
+        <p class = "tester">
             {{items}}
         </p>
-        <p><span class='testitem'></span><span class='fom asterisk'></span></p>
-        <p><span class='testitem'></span><span id='item'></span></p>
-
+      
+        <i id='item'></i>
+        <p id="field1">Now suppose _fom_item we wanted _fom_item to actually _fom_item style _fom_item this code and include some javascript. Notice _fom_item how quickly this can add complexity to our callback function</p>
+        
+        </br>
+        <p id = "field2">Look, just because I don't be giving no man a foot massage don't 
+make it right for Marsellus to throw Antwone into a glass motherfucking
+house, fucking up the way the nigger talks. Motherfucker do that shit to
+me, he better paralyze my ass, 'cause pass I'll kill the motherfucker,
+know what I'm sayin?</p>
     </body>
 </html>
