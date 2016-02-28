@@ -28,19 +28,18 @@ API docs at https://github.com/benavram/filter-o-matic
 """
 from flask import Flask, jsonify, request, json, render_template
 
-import filteromatic.main
+# import filteromatic.main
 from filteromatic.settings import app_name, licensed, docs, copy_r, lic_loc
 from filteromatic.main import Filter_o_matic
 from filteromatic.utils import word_lists, word_check
 from datetime import datetime
 app = Flask(__name__)
 
+FEED_CONTENT = []
+ALL_WORDS = []
 
-    
 @app.route('/word_lists/')
 def serialize_lists():
-    feed_content = []
-    all_words = []
     ltypes = ('all', 'silly', 'profanity')
     if 'feed' not in request.args:
         list_type = 'all'
@@ -54,15 +53,11 @@ def serialize_lists():
             word = item[1]
             rating = item[2]
             list_category = item[3]
-            
-            item_list = {'word':word,
-                       'word_type':word_cat,
-                       'rating':rating
-                       }
-            feed_content.append(item_list)
-            
-        content = {list_category:{'the words':feed_content}
-            }
+
+            item_list = {'word':word, 'word_type':word_cat, 'rating':rating}
+            FEED_CONTENT.append(item_list)
+
+        content = {list_category:{'the words':FEED_CONTENT}}
     else:
         lists = ('silly', 'profanity')
         for l in lists:
@@ -71,19 +66,14 @@ def serialize_lists():
                 word = item[1]
                 rating = item[2]
                 list_category = item[3]
-                
-                item_list = {'word':word,
-                           'word_type':word_cat,
-                           'rating':rating
-                           }
-                feed_content.append(item_list)
-                
-            content = {list_category:{'the words':feed_content}
-                }
-            all_words.append(content)
-        
-    content_list = all_words if list_type == 'all' else content
-    
+                item_list = {'word':word, 'word_type':word_cat, 'rating':rating}
+                FEED_CONTENT.append(item_list)
+
+            content = {list_category:{'the words':FEED_CONTENT}}
+            ALL_WORDS.append(content)
+
+    content_list = ALL_WORDS if list_type == 'all' else content
+
     word_feed = {'filter-o-matic':'',
                  'request':list_type,
                  'link':request.url,
@@ -95,11 +85,10 @@ def serialize_lists():
                  'license':lic_loc,
                  'docs':docs,
                  'updated':datetime.now(),
-                 'content':content_list
-                    }
+                 'content':content_list}
 
     return_feed = jsonify(word_feed)
-        
+
     return return_feed
 
 @app.route('/evaluate/')
@@ -108,21 +97,22 @@ def apply_filter():
        request objects:
            eval_string: string to be evaluated, mandatory
            replacement_type:  type of replacement to insert (default = None)
-    """    
+    """
+
     r = None
     if 'eval_string' not in request.args:
         return jsonify({'exception':'invalid request'})
     elif request.args['eval_string'] == '':
         return jsonify({'exception':'invalid request'})
     else:
-        eval_string  = request.args['eval_string']
-    
+        eval_string = request.args['eval_string']
+
     if len(eval_string) > 1024:
         return json.dumps({'exception':'invalid request: string too long'})
-    
+
     if 'replacement_type' in request.args:
         r = request.args['replacement_type']
-        
+
     cleaned_string = Filter_o_matic(eval_string).cleanit(r)
     return_string = {'clean_string':cleaned_string}
     return jsonify(return_string)
@@ -147,11 +137,8 @@ def check_word():
 @app.route('/')
 def hello_world():
     return render_template('test.html', items="filter-o-matic")
-    # return "\25AE"
-    # return jsonify({'exception':'invalid request'})
 
 
 if __name__ == '__main__':
     #app.run(host='192.168.1.3', debug=True)
-    app.run(debug=True)    
-    
+    app.run(debug=True)

@@ -29,7 +29,8 @@ API docs at https://github.com/benavram/filter-o-matic
 import re
 import random
 from .__init__ import PROFANITY, REPLACEMENTS
-from .settings import WORD_REPLACE
+from .settings import WORD_REPLACE  # pylint: disable = W0611
+
 
 TEXT = """Look, just because I don't be giving no man a foot massage don't
 make it right for Marsellus to throw Antwone into a glass motherfucking
@@ -39,7 +40,6 @@ know what I'm sayin?"""
 
 replacements = iter(REPLACEMENTS)
 grawlix = ["$", "#", "@", "!", "*", "&", "%", "~", "}"]
-grawlix_e = { "\\$", "\\#", "@", "!", "*", "\\&", "\\%" }
 font_awesome_icons = '_fom_item'
 class Filter_o_matic(object):
     """  docstring
@@ -53,59 +53,47 @@ class Filter_o_matic(object):
         self.eval_string = eval_string
         p_expr = '(%s)' %'|\\b'.join(PROFANITY)
         self.re_profanity = re.compile(p_expr, re.I|re.M)
-        
 
-    def get_replacements(self, i):
+    def get_replacements(self, i): # pylint: disable = R0914, W0613
         if self.rep_scheme is not None:
-            WORD_REPLACE = self.rep_scheme
+            WORD_REPLACE = self.rep_scheme # pylint: disable = W0621
         if WORD_REPLACE == 'grawlixes':
-            n = random.randint(4,10)
-            print('this is a test')
+            n = random.randint(4, 10)
             g_l = []
             for i in range(n):
                 g = random.sample(grawlix, 1)
                 g_l.append(g[0])
             glist = ''.join(g_l)
             return glist
-        
         elif WORD_REPLACE == 'font_awesome':
             fa_l = []
             f = font_awesome_icons
             fa_l.append(f)
             falist = ''.join(fa_l)
             return falist
-        
         elif WORD_REPLACE == 'hashes':
-            n = random.randint(4,10)
+            n = random.randint(4, 10)
             h_l = []
             for i in range(n):
                 h = '#'
                 h_l.append(h)
             hlist = ''.join(h_l)
             return hlist
-        
         elif WORD_REPLACE == 'exes':
-            n = random.randint(4,10)
+            n = random.randint(4, 10)
             x_l = []
             for i in range(n):
                 x = 'X'
                 x_l.append(x)
             xlist = ''.join(x_l)
-            return xlist       
-
+            return xlist
         else:
             random.shuffle(REPLACEMENTS)
             # r_word = random.sample(REPLACEMENTS, 1)
-            return next(replacements)            
+            return next(replacements)
 
     def cleanit(self, reps=None):
         self.rep_scheme = reps
         cleansed = self.re_profanity.sub(self.get_replacements,
                                          self.eval_string)
         return cleansed
-
-
-
-
-
-

@@ -42,8 +42,7 @@ def word_lists(list_type):
         tmp_lst = (wordtype.decode("utf-8"),
                    word.decode("utf-8"),
                    rating.decode("utf-8"),
-                   list_category.decode("utf-8")
-                   )
+                   list_category.decode("utf-8"))
         return_list.append(tmp_lst)
     return return_list
 
@@ -53,7 +52,7 @@ def word_check(word):
     word: string
     """
     l = []
-    
+
     for key in REDIS_CONN.scan_iter('profanity:*'):
         item = REDIS_CONN.hscan(key)
         mystr = word

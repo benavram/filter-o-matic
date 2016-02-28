@@ -28,7 +28,7 @@ API docs at https://github.com/benavram/filter-o-matic
 """
 import redis
 
-app_name = 'filter-o-matic',
+app_name = 'filter-o-matic'
 licensed = """
         licensed in accordance with terms of the GNU General Public
         License
