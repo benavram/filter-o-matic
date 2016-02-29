@@ -55,9 +55,7 @@ class Filter_o_matic(object):
         self.re_profanity = re.compile(p_expr, re.I|re.M)
 
     def get_replacements(self, i): # pylint: disable = R0914, W0613
-        if self.rep_scheme is not None:
-            WORD_REPLACE = self.rep_scheme # pylint: disable = W0621
-        if WORD_REPLACE == 'grawlixes':
+        if  self.rep_scheme == 'grawlixes':
             n = random.randint(4, 10)
             g_l = []
             for i in range(n):
@@ -65,13 +63,14 @@ class Filter_o_matic(object):
                 g_l.append(g[0])
             glist = ''.join(g_l)
             return glist
-        elif WORD_REPLACE == 'font_awesome':
+        
+        elif  self.rep_scheme == 'font_awesome':
             fa_l = []
             f = font_awesome_icons
             fa_l.append(f)
             falist = ''.join(fa_l)
             return falist
-        elif WORD_REPLACE == 'hashes':
+        elif  self.rep_scheme == 'hashes':
             n = random.randint(4, 10)
             h_l = []
             for i in range(n):
@@ -79,7 +78,7 @@ class Filter_o_matic(object):
                 h_l.append(h)
             hlist = ''.join(h_l)
             return hlist
-        elif WORD_REPLACE == 'exes':
+        elif  self.rep_scheme == 'exes':
             n = random.randint(4, 10)
             x_l = []
             for i in range(n):
@@ -93,7 +92,11 @@ class Filter_o_matic(object):
             return next(replacements)
 
     def cleanit(self, reps=None):
-        self.rep_scheme = reps
+        if reps is None:
+            self.rep_scheme = 'hashes'
+        else:
+            self.rep_scheme = reps
+            
         cleansed = self.re_profanity.sub(self.get_replacements,
                                          self.eval_string)
         return cleansed

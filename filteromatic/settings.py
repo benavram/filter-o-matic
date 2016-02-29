@@ -28,6 +28,12 @@ API docs at https://github.com/benavram/filter-o-matic
 """
 import redis
 
+class Config(object):
+    DEBUG = False
+    STATIC_FOLDER = '/home/officeish1/webapps/filteromatic_static/'
+    
+
+
 app_name = 'filter-o-matic'
 licensed = """
         licensed in accordance with terms of the GNU General Public
